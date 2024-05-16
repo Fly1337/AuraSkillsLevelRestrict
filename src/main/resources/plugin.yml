@@ -1,4 +1,17 @@
 name: AuraSkillsLevelRestrict
-version: '${project.version}'
+version: 1.0-SNAPSHOT
 main: com.fly.auraskillslevelrestrict.Addon
+author: Fly(discord=phoenixfly1337)
+depend: [AuraSkills]
 api-version: '1.20'
+
+commands:
+  aurarestrictreload:
+    description: Reloads the plugin
+    usage: /aurarestrictreload
+    permission: aurarestrict.reload
+
+permissions:
+  aurarestrict.reload:
+    description: Allows the player to reload the plugin
+    default: op

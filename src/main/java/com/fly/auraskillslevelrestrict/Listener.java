@@ -60,6 +60,9 @@ public class Listener implements org.bukkit.event.Listener {
             Data data = Addon.data.get(material);
             if(data.breakBlock) {
 
+                if(player.getGameMode() == GameMode.CREATIVE && Addon.creativebypass) return;
+                if(player.isOp() && Addon.opbypass) return;
+
                 // Checking for denied worlds that can be ignored
                 if(data.deniedWorlds.contains(player.getWorld().getName())) {
                     return;
@@ -86,21 +89,6 @@ public class Listener implements org.bukkit.event.Listener {
                         player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
                         return;
                     }
-                }
-
-                if(player.getGameMode() == GameMode.CREATIVE && !Addon.creativebypass) {
-                    event.setCancelled(true);
-                    event.setDropItems(false);
-                    String message = data.breakMessage == null ? Addon.global : data.breakMessage;
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-                    return;
-                }
-
-                if(player.isOp() && !Addon.opbypass) {
-                    event.setCancelled(true);
-                    event.setDropItems(false);
-                    String message = data.breakMessage == null ? Addon.global : data.breakMessage;
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
                 }
             }
         }

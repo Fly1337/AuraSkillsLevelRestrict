@@ -1,10 +1,12 @@
 package com.fly.auraskillslevelrestrict;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public final class Addon extends JavaPlugin {
 
@@ -16,6 +18,7 @@ public final class Addon extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        getLogger().info("Enabling AuraSkillsLevelRestrict with the Version 1.0-SNAPSHOT by phoenixfly1337");
         instance = this;
 
         if(!getDataFolder().exists()) {
@@ -24,6 +27,7 @@ public final class Addon extends JavaPlugin {
 
         saveDefaultConfig();
 
+        getLogger().info("Loading the config");
         load();
 
         getCommand("aurarestrictreload").setExecutor(new ReloadCommand());
@@ -40,18 +44,43 @@ public final class Addon extends JavaPlugin {
         global = config.getString("global-message");
         opbypass = config.getBoolean("op-bypass");
         creativebypass = config.getBoolean("creative-bypass");
-        for(String key : config.getConfigurationSection("blocks").getKeys(false)) {
-            Material material = Material.getMaterial(key);
-            Data data = new Data();
-            data.place = config.getBoolean("blocks." + key + ".types.place.use");
-            data.breakBlock = config.getBoolean("blocks." + key + ".types.break.use");
-            data.placeMessage = config.getString("blocks." + key + ".messages.place.message");
-            data.breakMessage = config.getString("blocks." + key + ".messages.break.message");
-            for(String level : config.getConfigurationSection("blocks." + key + ".levels").getKeys(false)) {
-                data.levels.put(level, config.getInt("blocks." + key + ".levels." + level));
-            }
-            data.deniedWorlds.addAll(config.getStringList("blocks." + key + ".denied-worlds"));
-            Addon.data.put(material, data);
+        ConfigurationSection blocks = config.getConfigurationSection("blocks");
+
+        if(blocks == null) {
+            instance.getLogger().info("The \"blocks\" section is not formatted right!");
+            return;
         }
+
+        Set<String> keys = blocks.getKeys(false);
+
+        if(keys.isEmpty()) {
+            instance.getLogger().info("No blocks found in the config.");
+            return;
+        }
+
+        int count = 0;
+        for(String key : keys) {
+            Material material = Material.getMaterial(key);
+            if(material == null) {
+                instance.getLogger().warning("Material " + key + " not found.");
+                continue;
+            }
+            Data data = new Data();
+            data.place = blocks.getBoolean(key + ".types.place.use");
+            data.breakBlock = blocks.getBoolean(key + ".types.break.use");
+            data.placeMessage = blocks.getString(key + ".types.place.message");
+            data.breakMessage = blocks.getString(key + ".types.break.message");
+            ConfigurationSection levels = blocks.getConfigurationSection(key + ".levels");
+            if(levels != null) {
+                for(String level : levels.getKeys(false)) {
+                    data.levels.put(level, blocks.getInt(key + ".levels." + level));
+                }
+            }
+            data.permissions.addAll(blocks.getStringList(key + ".permissions"));
+            data.deniedWorlds.addAll(blocks.getStringList(key + ".excluded-worlds"));
+            Addon.data.put(material, data);
+            count++;
+        }
+        instance.getLogger().info("Loaded " + count + " blocks.");
     }
 }

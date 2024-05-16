@@ -1,5 +1,8 @@
 package com.fly.auraskillslevelrestrict;
 
+import dev.aurelium.auraskills.api.AuraSkillsApi;
+import dev.aurelium.auraskills.api.skill.Skills;
+import dev.aurelium.auraskills.api.user.SkillsUser;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 
@@ -25,19 +28,23 @@ public class Listener implements org.bukkit.event.Listener {
                     return;
                 }
                 if(data.deniedWorlds.contains(player.getWorld().getName())) {
-                    event.setCancelled(true);
-                    String message = data.placeMessage == null ? Addon.global : data.placeMessage;
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('§', message));
                     return;
                 }
+                for(String permission : data.permissions) {
+                    if(!player.hasPermission(permission)) {
+                        event.setCancelled(true);
+                        String message = data.placeMessage == null ? Addon.global : data.placeMessage;
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('§', message));
+                        return;
+                    }
+                }
+                SkillsUser user = AuraSkillsApi.get().getUser(player.getUniqueId());
                 for(String level : data.levels.keySet()) {
-                    if(player.hasPermission("auraskills.level." + level)) {
-                        if(player.getLevel() < data.levels.get(level)) {
-                            event.setCancelled(true);
-                            String message = data.placeMessage == null ? Addon.global : data.placeMessage;
-                            player.sendMessage(ChatColor.translateAlternateColorCodes('§', message));
-                            return;
-                        }
+                    if(user.getSkillLevel(Skills.valueOf(level.toUpperCase())) < data.levels.get(level)) {
+                        event.setCancelled(true);
+                        String message = data.placeMessage == null ? Addon.global : data.placeMessage;
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('§', message));
+                        return;
                     }
                 }
             }
@@ -53,30 +60,38 @@ public class Listener implements org.bukkit.event.Listener {
             if(data.breakBlock) {
                 if(player.getGameMode() == org.bukkit.GameMode.CREATIVE && !Addon.creativebypass) {
                     event.setCancelled(true);
+                    event.setDropItems(false);
                     String message = data.breakMessage == null ? Addon.global : data.breakMessage;
                     player.sendMessage(ChatColor.translateAlternateColorCodes('§', message));
                     return;
                 }
                 if(player.isOp() && !Addon.opbypass) {
                     event.setCancelled(true);
+                    event.setDropItems(false);
                     String message = data.breakMessage == null ? Addon.global : data.breakMessage;
                     player.sendMessage(ChatColor.translateAlternateColorCodes('§', message));
                     return;
                 }
                 if(data.deniedWorlds.contains(player.getWorld().getName())) {
-                    event.setCancelled(true);
-                    String message = data.breakMessage == null ? Addon.global : data.breakMessage;
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('§', message));
                     return;
                 }
+                for(String permission : data.permissions) {
+                    if(!player.hasPermission(permission)) {
+                        event.setCancelled(true);
+                        event.setDropItems(false);
+                        String message = data.breakMessage == null ? Addon.global : data.breakMessage;
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('§', message));
+                        return;
+                    }
+                }
+                SkillsUser user = AuraSkillsApi.get().getUser(player.getUniqueId());
                 for(String level : data.levels.keySet()) {
-                    if(player.hasPermission("auraskills.level." + level)) {
-                        if(player.getLevel() < data.levels.get(level)) {
-                            event.setCancelled(true);
-                            String message = data.breakMessage == null ? Addon.global : data.breakMessage;
-                            player.sendMessage(ChatColor.translateAlternateColorCodes('§', message));
-                            return;
-                        }
+                    if(user.getSkillLevel(Skills.valueOf(level.toUpperCase())) < data.levels.get(level)) {
+                        event.setCancelled(true);
+                        event.setDropItems(false);
+                        String message = data.breakMessage == null ? Addon.global : data.breakMessage;
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('§', message));
+                        return;
                     }
                 }
             }

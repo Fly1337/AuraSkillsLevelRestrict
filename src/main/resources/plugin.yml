@@ -1,0 +1,4 @@
+name: AuraSkillsLevelRestrict
+version: '${project.version}'
+main: com.fly.auraskillslevelrestrict.Addon
+api-version: '1.20'

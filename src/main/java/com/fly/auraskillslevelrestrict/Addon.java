@@ -35,10 +35,6 @@ public final class Addon extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Listener(), this);
     }
 
-    @Override
-    public void onDisable() {
-    }
-
     public static void load() {
         FileConfiguration config = instance.getConfig();
         global = config.getString("global-message");

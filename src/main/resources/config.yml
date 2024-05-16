@@ -5,7 +5,7 @@ op-bypass: true
 creative-bypass: true
 
 # Message for all types that don't have a specific message
-global-message: "§cYou can't do that!"
+global-message: "&cYou can't do that!"
 
 blocks:
 # Below is an example! Make sure to always provide the fields, even when they are empty!
@@ -13,10 +13,10 @@ blocks:
 #    types:
 #      place:
 #        use: false
-#        message: "§cYou can't place diamond blocks!"
+#        message: "&cYou can't place diamond blocks!"
 #      break:
 #        use: true
-#        message: "§cYou can't break diamond blocks!"
+#        message: "&cYou can't break diamond blocks!"
 #    levels:
 #      mining: 50
 #    permissions:

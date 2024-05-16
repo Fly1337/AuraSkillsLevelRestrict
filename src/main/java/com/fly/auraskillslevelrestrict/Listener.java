@@ -23,6 +23,9 @@ public class Listener implements org.bukkit.event.Listener {
             com.fly.auraskillslevelrestrict.Data data = Addon.data.get(material);
             if(data.place) {
 
+                if(player.getGameMode() == GameMode.CREATIVE && Addon.creativebypass) return;
+                if(player.isOp() && Addon.opbypass) return;
+
                 if(data.deniedWorlds.contains(player.getWorld().getName())) {
                     return;
                 }
@@ -44,18 +47,6 @@ public class Listener implements org.bukkit.event.Listener {
                         player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
                         return;
                     }
-                }
-
-                if(player.getGameMode() == GameMode.CREATIVE && !Addon.creativebypass) {
-                    event.setCancelled(true);
-                    String message = data.placeMessage == null ? Addon.global : data.placeMessage;
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-                    return;
-                }
-                if(player.isOp() && !Addon.opbypass) {
-                    event.setCancelled(true);
-                    String message = data.placeMessage == null ? Addon.global : data.placeMessage;
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
                 }
             }
         }

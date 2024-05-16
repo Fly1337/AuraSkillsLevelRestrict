@@ -23,4 +23,4 @@ A simple Plugin that allows placing and breaking a block behind (multiple) skill
 - `levels`, `permissions` and `excluded-worlds` don't need to have values
 
 ### Questions/Bugs?
-Join the Aurelium Discord [here]() and ask in [this]() post!
+Join the Aurelium Discord [here](https://discord.gg/Bh2EZfB) and ask in [this](https://discord.com/channels/732657582313046027/1240734988844925009) post!
